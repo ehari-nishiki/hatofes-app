@@ -37,9 +37,14 @@ main {
   font-style: normal;
 }
 
+.devtitle {
+  text-align: left;
+}
+
 @media (min-width: 758px) {
   .mainpicture {
   width: 40%;
   text-align: center;
+  display: flex;
 }
 }
