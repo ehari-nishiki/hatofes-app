@@ -13,7 +13,7 @@ main {
   display: flex;
   place-items: center;
   min-width: 10px;
-    font-family: "din-2014" ;
+  font-family: "din-2014" ;
   font-weight: 700;
   font-style: normal;
 }
