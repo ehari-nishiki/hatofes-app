@@ -4,24 +4,39 @@
   background-color: #1600cd;
 }
 
+header {
+   place-items: center;
+}
 
-body {
+main {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  min-width: 10px;
+    font-family: "din-2014" ;
+  font-weight: 700;
+  font-style: normal;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.html {
+  color: #000;
+}
+.mainpicture {
+
+  width: 100%;
+}
+
+.h1 {
+  text-align: center;
+  margin: 20px;
+  padding: 5px;
+  font-family: "din-2014" ;
+  font-weight: 700;
+  font-style: normal;
+}
+
+@media (min-width: 758px) {
+  .mainpicture {
+  width: 40%;
+}
 }
