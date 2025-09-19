@@ -16,11 +16,14 @@ header {
 }
 
 
-.h1 {
+a {
   font-family: "din-2014" ;
   font-style: normal;
   margin-left: 10px;
   margin-right: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 25px;
 }
 
 .hamburger_botton {
