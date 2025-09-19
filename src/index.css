@@ -2,6 +2,10 @@
   color-scheme: blue;
   color: rgba(255, 255, 255, 0.87);
   background-color: #1600cd;
+    font-family: "din-2014" ;
+  font-weight: 700;
+  font-style: normal;
+  font-family: "din-2014", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 header {
@@ -13,9 +17,7 @@ main {
   display: flex;
   place-items: center;
   min-width: 10px;
-  font-family: "din-2014" ;
-  font-weight: 700;
-  font-style: normal;
+
 }
 
 .html {
