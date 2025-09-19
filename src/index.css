@@ -40,20 +40,16 @@ main {
 }
 
 
-.developerform {
+h2 {
   text-align: left;
-  font-size: 20pt;
+  font-size: 30pt;
   display: flex;
-  font-family: "toppan-bunkyu-midashi-min-st", serif;
-  margin: 5px;
-
+  margin: 20px;
+font-family: "yu-gothic-pr6n", sans-serif;
 font-style: normal;
-}
+letter-spacing: 0.2em;
 
-.h2 {
-  margin: 5px;
 }
-
 .gradationline {
   height: 10px;
   width: 100vw;
@@ -65,6 +61,60 @@ font-style: normal;
     #feb47b
   )
 }
+
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
+html {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+.btn,
+a.btn,
+button.btn {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.5;
+  position: relative;
+  display: flex;
+   justify-content: center;
+   align-items: center;
+  padding: 1rem 4rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #212529;
+  border-radius: 0.5rem;
+
+}
+
+a.btn--yellow {
+  color: #000;
+  background-color: #fff100;
+  border-bottom: 5px solid #ccc100;
+}
+
+a.btn--yellow:hover {
+  margin-top: 3px;
+  color: #000;
+  background: #fff20a;
+  border-bottom: 2px solid #ccc100;
+}
+
 
 @media (min-width: 758px) {
   .mainpicture {
@@ -78,7 +128,8 @@ header {
   align-items: center;           /* 縦方向中央揃え */
   padding: 0 20px;               /* 横に余白 */
   justify-content: space-around;
-  height: 60px;
+  height: 70px;
+  font-size: 15px;
 }
 
 .h2 {
@@ -95,6 +146,7 @@ display: flex;
 .hamburger_botton {
   display: none;
 }
+
 
 
 }
