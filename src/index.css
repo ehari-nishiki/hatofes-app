@@ -2,8 +2,6 @@
   color-scheme: blue;
   color: rgba(255, 255, 255, 0.87);
   background-color: #1600cd;
-    font-family: "din-2014" ;
-  font-weight: 700;
   font-style: normal;
   font-family: "din-2014", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -20,11 +18,7 @@ main {
 
 }
 
-.html {
-  color: #000;
-}
 .mainpicture {
-
   width: 100%;
 }
 
@@ -37,8 +31,18 @@ main {
   font-style: normal;
 }
 
-.devtitle {
+.developerform {
   text-align: left;
+  font-size: 20pt;
+  display: flex;
+  font-family: "toppan-bunkyu-midashi-min-st", serif;
+  margin: 5px;
+
+font-style: normal;
+}
+
+.h2 {
+  margin: 5px;
 }
 
 @media (min-width: 758px) {
