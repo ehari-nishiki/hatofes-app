@@ -42,6 +42,10 @@ main {
   width: 100%;
 }
 
+.mainpicture-pc {
+  width: 100%;
+}
+
 
 h2 {
   text-align: left;
@@ -118,6 +122,13 @@ a.btn--yellow:hover {
   border-bottom: 2px solid #ccc100;
 }
 
+@media (max-width: 758px) {
+.mainpicture-pc {
+  display: none;
+}
+}
+
+
 
 @media (min-width: 758px) {
   .mainpicture {
@@ -135,8 +146,16 @@ header {
   font-size: 15px;
 }
 
+.mainpicture {
+  display: none;
+}
+
 .h2 {
 display: flex;
+}
+
+.main {
+  display: flex;
 }
 
 .h1 {

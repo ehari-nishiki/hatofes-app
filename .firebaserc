@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "hatofes-ecc25"
-  }
+  },
+  "targets": {
+    "hatofes-ecc25": {
+      "hosting": {
+        "default": [
+          "hatofes-ecc25"
+        ],
+        "dev": [
+          "hatofes-dev"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
