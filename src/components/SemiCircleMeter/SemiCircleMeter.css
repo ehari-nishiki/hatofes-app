@@ -1,0 +1,26 @@
+.semi-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.track {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 12;
+}
+
+.progress {
+  fill: none;
+  stroke: #4cc9f0;
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.value {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
