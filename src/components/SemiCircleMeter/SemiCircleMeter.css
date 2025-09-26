@@ -44,3 +44,89 @@
     padding-top: 5px;
 
 }
+/* SemiCircleMeter styles
+   Designed to match the provided SemiCircleMeter.tsx component
+   - SVG sizing is controlled in the component (radius + padding)
+   - This CSS handles layout, typography, colors, transitions, and responsive behavior
+*/
+
+:root {
+  --meter-max-width: 360px; /* container max width */
+  --track-color: #eee;
+  --track-width: 12px; /* visual reference; actual strokeWidth is set on SVG path attributes */
+  --value-color: #333;
+  --title-bg: rgba(255,255,255,0.85);
+}
+
+.semi-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: var(--meter-max-width);
+  box-sizing: border-box;
+  padding: 8px;
+}
+
+/* Title area above the gauge */
+.Hato-point-title {
+  width: 100%;
+  text-align: center;
+  font-family: "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--value-color);
+  background: var(--title-bg);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+/* SVG track base: neutral background line */
+.track {
+  fill: none;
+  stroke: var(--track-color);
+  stroke-width: var(--track-width);
+  stroke-linecap: round;
+}
+
+/* white highlight track overlay to create a subtle inset look */
+.trackwhite {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: calc(var(--track-width) - 2px);
+  stroke-linecap: round;
+  mix-blend-mode: normal;
+  opacity: 0.95;
+}
+
+/* progress stroke (SVG stroke uses gradient from component) */
+.progress {
+  fill: none;
+  stroke-width: var(--track-width);
+  stroke-linecap: round;
+  /* transition applied inline in component for guaranteed timing, but keep fallback here */
+  transition: stroke-dashoffset 0.6s ease, stroke 0.3s ease;
+}
+
+/* numeric value under the gauge */
+.value {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--value-color);
+}
+
+/* responsive behavior */
+@media (max-width: 420px) {
+  .semi-meter { max-width: 320px; }
+  .Hato-point-title { font-size: 16px; padding: 6px 10px; }
+  .value { font-size: 14px; }
+}
+
+/* small visual polishing: when user hovers the meter, make progress slightly bolder */
+.semi-meter:hover .progress {
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+}
