@@ -1,22 +1,28 @@
+// React のフックを読み込み
 import { useEffect, useRef, useState } from 'react'
+// CSS を読み込み
 import './App.css'
 
+// 半円メーターのコンポーネントを読み込み
 import SemiCircleMeter from "./components/SemiCircleMeter/SemiCircleMeter";
 
+// Firebase 初期化用
 import { initializeApp } from 'firebase/app'
+// Firebase 認証関連の関数を読み込み
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence,
+  getAuth,               // 認証オブジェクト取得
+  GoogleAuthProvider,    // Googleログイン用プロバイダー
+  signInWithPopup,       // ポップアップでサインイン
+  signOut,               // サインアウト
+  onAuthStateChanged,    // ログイン状態の監視
+  setPersistence,        // 認証の永続化設定
+  browserLocalPersistence, // ローカルに永続化
 } from 'firebase/auth'
 
+// 認証ユーザーの型定義を読み込み
 import type { User } from 'firebase/auth'
 
-// Firebase config は .env から読み込み（Vite なので VITE_ プレフィックス必須）
+// Firebase の設定を環境変数から取得
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string | undefined,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string | undefined,
@@ -24,27 +30,34 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID as string | undefined,
 }
 
-// Google provider can be created without auth instance
+// Googleログイン用のプロバイダーを作成
 const provider = new GoogleAuthProvider()
+// アカウント選択を強制する設定
 provider.setCustomParameters({ prompt: 'select_account' })
 
+// Reactコンポーネント App
 export default function App() {
+  // 認証ユーザー情報
   const [user, setUser] = useState<User | null>(null)
+  // 認証の読み込み中フラグ
   const [loadingAuth, setLoadingAuth] = useState(true)
+  // Firebase初期化エラーの保存
   const [initError, setInitError] = useState<string | null>(null)
 
-  // demo: local points state (will be replaced by DB later)
+  // 仮ポイントの状態（後でDBに置き換える想定）
   const [points, setPoints] = useState<number>(65)
 
-  // auth instance stored in ref so functions can access it
+  // 認証インスタンスを保持するためのref
   const authRef = useRef<any>(null)
 
+  // コンポーネント初期化時にFirebaseを初期化する
   useEffect(() => {
-    // Validate envs before initializing Firebase
+    // 環境変数が揃っているか確認
     const missing = Object.entries(firebaseConfig)
-      .filter(([_, v]) => !v)
-      .map(([k]) => k)
+      .filter(([_, v]) => !v) // 値が未定義のものを抽出
+      .map(([k]) => k)        // キー名だけ取り出す
 
+    // 不足があればエラーメッセージ表示
     if (missing.length > 0) {
       setInitError(`Missing Firebase env: ${missing.join(', ')}\nMake sure you have a .env with VITE_FIREBASE_* values.`)
       setLoadingAuth(false)
@@ -52,17 +65,22 @@ export default function App() {
     }
 
     try {
+      // Firebaseアプリを初期化
       const app = initializeApp(firebaseConfig as any)
+      // 認証インスタンスを取得
       const auth = getAuth(app)
-      // ブラウザを閉じてもログイン維持（失敗しても警告）
+      // 認証をブラウザローカルに保存（ログイン状態維持）
       setPersistence(auth, browserLocalPersistence).catch((e) => console.warn('setPersistence failed', e))
+      // refに保持
       authRef.current = auth
 
+      // 認証状態が変わったらコールバック
       const unsub = onAuthStateChanged(auth, (u) => {
-        setUser(u)
-        setLoadingAuth(false)
+        setUser(u)             // ユーザー情報を更新
+        setLoadingAuth(false)  // ローディング解除
       })
 
+      // クリーンアップで監視解除
       return () => unsub()
     } catch (e: any) {
       console.error('Firebase init error', e)
@@ -71,29 +89,32 @@ export default function App() {
     }
   }, [])
 
+  // Googleログイン関数
   const login = async () => {
     if (!authRef.current) {
       alert('Auth not initialized. Check console or .env settings.')
       return
     }
     try {
-      await signInWithPopup(authRef.current, provider)
+      await signInWithPopup(authRef.current, provider) // ポップアップでログイン
     } catch (e) {
       console.error(e)
       alert('ログインに失敗しました')
     }
   }
 
+  // ログアウト関数
   const logout = async () => {
     if (!authRef.current) return
     await signOut(authRef.current)
   }
 
+  // コンポーネントの描画
   return (
     <div style={{ padding: 40 }}>
       <h1>鳩ポイント確認</h1>
 
-      {/* show init error if present */}
+      {/* Firebase 初期化エラーを表示 */}
       {initError ? (
         <div style={{ padding: 12, background: '#fee', border: '1px solid #fbb', borderRadius: 8 }}>
           <strong>Firebase 初期化エラー</strong>
@@ -108,9 +129,10 @@ VITE_FIREBASE_APP_ID=your_app_id</pre>
         </div>
       ) : (
         <>
-          {/* Point meter (local state for now) */}
+          {/* ポイントメーター */}
           <SemiCircleMeter value={points} max={100} />
 
+          {/* ポイント操作ボタン */}
           <div style={{ marginTop: 12 }}>
             <button onClick={() => setPoints(p => Math.max(0, p - 5))}>-5</button>
             <button onClick={() => setPoints(p => Math.min(100, p + 5))}>+5</button>
@@ -121,9 +143,11 @@ VITE_FIREBASE_APP_ID=your_app_id</pre>
 
           <h2>管理ログイン</h2>
 
+          {/* 認証UI */}
           {loadingAuth ? (
-            <p>Loading...</p>
+            <p>Loading...</p>  // ローディング中
           ) : user ? (
+            // ログイン済みの場合
             <div className="card" style={{ display: 'grid', gap: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 {user.photoURL && (
@@ -143,6 +167,7 @@ VITE_FIREBASE_APP_ID=your_app_id</pre>
               <button onClick={logout}>ログアウト</button>
             </div>
           ) : (
+            // 未ログインの場合
             <div className="card" style={{ display: 'grid', gap: 8 }}>
               <p>管理ページを利用するには Google でログインしてください。</p>
               <button onClick={login}>Googleでログイン</button>
