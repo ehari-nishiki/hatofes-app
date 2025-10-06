@@ -111,8 +111,8 @@ export default function App() {
 
   // コンポーネントの描画
   return (
-    <div style={{ padding: 40 }}>
-      <h1>鳩ポイント確認</h1>
+    <div style={{ padding: 15}}>
+
 
       {/* Firebase 初期化エラーを表示 */}
       {initError ? (
