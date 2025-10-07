@@ -1,162 +1,436 @@
+/* デザインシステム - CSS変数 */
+:root {
+    /* フォント */
+    --font-japanese: "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-english-numbers: "din-2014", sans-serif;
+    
+    /* カラーシステム */
+    --color-bg-primary: #000000;
+    --color-text-primary: #ffffff;
+    --color-border-primary: #ffffff;
+    --color-gradient-start: #FF0000;
+    --color-gradient-end: #D107CA;
+    
+    /* 枠線システム */
+    --border-width-thin: 1px;
+    --border-width-medium: 2px;
+    --border-width-thick: 3px;
+    
+    /* 角丸システム */
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --border-radius-large: 12px;
+    --border-radius-circle: 50%;
+    
+    /* スペーシングシステム */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 20px;
+    --spacing-xxl: 24px;
+    --spacing-xxxl: 32px;
+    
+    /* フォントサイズシステム */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-xxl: 24px;
+    --font-size-xxxl: 32px;
+    --font-size-display-sm: 48px;
+    --font-size-display-md: 64px;
+    --font-size-display-lg: 80px;
+    --font-size-display-xl: 96px;
+}
+
 .semi-meter {
     display: flex;
-    flex-direction: column; /* コラムの記述は消さないでください */
-    align-items: stretch; /* 子要素を横いっぱいに伸ばす */
-    padding: 15px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--spacing-xl);
     width: 100%;
-    box-sizing: border-box; /* padding を含めた幅計算 */
-    box-shadow: 0 0 30px rgb(255, 255, 255);
-    border-radius: 8px;
+    box-sizing: border-box;
+    box-shadow: 0 0 30px var(--color-border-primary);
+    border-radius: var(--border-radius-medium);
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
 }
 
-.svg {
+/* タイトル行 - 詳細ボタン削除後の調整 */
+.title-row {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 10px;
-}
-
-.track {
-    fill: none;
-    stroke: #000000; /*メーター黒背景*/
-    stroke-width: 30;
-    stroke-linecap: round;
-}
-
-.trackwhite {
-    fill: none;
-    stroke: #ffffff;/*メーター白枠線*/
-    stroke-width: 22;
-    stroke-linecap: round;
-}
-
-.title-row { /*タイトル、詳細を見る欄*/
-    display: flex;
-    flex-direction: row; /* ← 横並びを明示 */
-    align-items: center;
-    gap: 12px;
+    justify-content: flex-start;
     width: 100%;
-    margin-bottom: 7.5px;
-    margin-left: 2.5px;
+    margin-bottom: var(--spacing-xxxl);
     text-align: left;
-    font-family: "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-family: var(--font-japanese);
     font-weight: 700;
-    font-size: 20px;
-    background-color: #000000;
+    font-size: var(--font-size-xl);
 }
 
-.Hato-point-title { /*タイトル*/
-    /* layout: center title + small dot */
+.Hato-point-title {
     display: inline-flex;
     align-items: center;
-    justify-content: center; /* keep internal centering of dot + text */
-    gap: 0.6ch; /* space between dot and text */
-
-    /* size & typography */
-
-    border-radius: 4px;
-    padding: 6px 12px;
+    justify-content: flex-start;
+    gap: var(--spacing-sm);
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-sm) var(--spacing-md);
     line-height: 1;
-    
-    outline: 1px solid #ffffff;
+    border: var(--border-width-medium) solid var(--color-border-primary);
+    background-color: transparent;
 }
 
-.grad-dot { /*タイトルのアイコン設定*/
+.grad-dot {
     display: inline-block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-image: linear-gradient(90deg, #FF0000 0%, #D107CA 100%);
+    width: var(--spacing-md);
+    height: var(--spacing-md);
+    border-radius: var(--border-radius-circle);
+    background-image: linear-gradient(90deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
     box-shadow: 0 1px 3px rgba(0,0,0,0.12);
     vertical-align: middle;
     flex: 0 0 auto;
 }
 
-.Hato-point-title h1 { /*タイトルの文字設定*/
+.Hato-point-title h1 {
     margin: 0;
     padding: 0;
-    font-size: 16px;
-    line-height: 1; /* 1px は不自然に小さいので修正 */
-    color: #ffffff;
-}
-
-.detail-button button { /*ボタン*/
-    outline: 1px solid #ffffff;
-    background-color: #000000;
-    color: #ffffff;
-    font-family: "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    font-weight: 700;
-    font-size: 16px;
-    border-radius: 4px;
-    display: inline-flex; /* inline 要素として横に並べつつ内部は flex */
-    align-items: center;   /* 内部の縦中央合わせ */
-    padding: 6px 10px; /* 横パディングを少し確保 */
+    font-size: var(--font-size-md);
     line-height: 1;
-    width: auto;
-    box-shadow: none;
-    -webkit-appearance: none;
-    appearance: none;
-    border: none;
-    vertical-align: middle; /* 親のインライン行ボックスに対する揃え */
-    justify-content: center;
+    color: var(--color-text-primary);
+    font-family: var(--font-japanese);
 }
 
-.detail-button { /*ボタン詳細*/
-    display: inline-flex;
-    align-items: center;
-    align-self: center; /* ensure this flex item centers vertically in the parent .title-row */
-    justify-content: center;
-    margin: 0; /* clear any unexpected margins */
-    padding: 0; /* keep spacing inside the button itself, not the wrapper */
-    height: auto;
-}
+/* 詳細ボタンのスタイル - 削除済み */
 
-.point-number{ /*メーター黒背景*/
-    outline: 1px solid #ffffff;
-    border-radius: 4px;
-    font-size: 96px;
-    font-family: din-2014, sans-serif;
+/* ポイント表示 - 最大5桁対応でさらに大きく */
+.point-number {
+    border: var(--border-width-medium) solid var(--color-border-primary);
+    border-radius: var(--border-radius-large);
+    font-size: 96pt; /* 96pxから120pxにさらに拡大 */
+    font-family: var(--font-english-numbers);
     font-weight: 700;
     font-style: normal;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     width: 100%;
     justify-content: flex-end;
-    line-height: 1; 
-    align-items: flex-end;
-    margin: 2.5px;
-    margin-bottom: 40px;
-    padding-left: 20px;
+    line-height: 1;
+    margin-bottom: var(--spacing-xxxl);
+    padding: var(--spacing-xl) var(--spacing-xxl);
+    min-height: 140px; /* 高さも拡大 */
 }
 
-.point-number p { /*ポイント文字*/
-    font-size: 40px;
-    padding: 5px;
-    margin-top: 5px;ß
-    margin-bottom: 5px;
-    margin-right: 10px;
+.point-number p {
+    font-size: var(--font-size-display-sm); /* 48px */
+    font-family: var(--font-japanese);
+    padding: 0;
+    margin: 0;
+    margin-right: var(--spacing-lg);
+    align-self: flex-end;
+    padding-bottom: var(--spacing-md);
 }
 
-.progress { 
+/* SVGコンテナ - レスポンシブ対応強化 */
+.svg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto var(--spacing-xxxl) auto;
+    position: relative;
+}
+
+.svg-container svg {
+    width: 100%;
+    height: auto;
+    max-width: 400px;
+}
+
+/* プログレスバー - 線幅を統一 */
+.track {
     fill: none;
-    stroke-width: 20;
+    stroke: var(--color-bg-primary);
+    stroke-width: 30; /* 統一された線幅 */
+    stroke-linecap: round;
+}
+
+.trackwhite {
+    fill: none;
+    stroke: var(--color-border-primary);
+    stroke-width: 32; /* 外側の白枠（2px太く） */
+    stroke-linecap: round;
+}
+
+.progress {
+    fill: none;
+    stroke-width: 30; /* プログレス部分も統一 */
     stroke-linecap: round;
     transition: stroke-dashoffset 0.6s ease;
 }
 
-.value {
-    margin-top: 8px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
+/* メーター内のレベル表示 - サイズ拡大 */
+.level-display {
+    font-family: var(--font-japanese);
+    font-size: 96pt; /* 96ptに設定 */
+    font-weight: 700;
+    fill: var(--color-text-primary);
 }
 
+.level-text-inside {
+    font-family: var(--font-japanese);
+    font-size: var(--font-size-xxl); /* 20pxから24pxに拡大 */
+    font-weight: 700;
+    fill: var(--color-text-primary);
+}
 
-/* SemiCircleMeter styles
-   Designed to match the provided SemiCircleMeter.tsx component
-   - SVG sizing is controlled in the component (radius + padding)
-   - This CSS handles layout, typography, colors, transitions, and responsive behavior
-*/
+.level-prefix-inside {
+    font-family: var(--font-japanese);
+    font-size: var(--font-size-xxl); /* 20pxから24pxに拡大 */
+    font-weight: 700;
+}
 
+.level-value-inside {
+    font-family: var(--font-english-numbers);
+    font-size: var(--font-size-display-sm); /* 32pxから48pxに拡大 */
+    font-weight: 700;
+}
 
+.next-level-text-inside {
+    font-family: var(--font-japanese);
+    font-size: var(--font-size-lg); /* 16pxから18pxに拡大 */
+    fill: var(--color-text-primary);
+}
 
-/* responsive behavior */
+/* レベル表示と次レベル情報の間に線を追加 */
+.level-separator {
+    width: 60px;
+    height: 1px;
+    background-color: var(--color-border-primary);
+    margin: var(--spacing-sm) auto;
+}
+
+/* メーター下の順位表示スタイル - レスポンシブ改善 */
+.stats-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-xxl);
+    margin-bottom: var(--spacing-xl);
+    gap: var(--spacing-lg);
+    width: 100%;
+}
+
+.stat-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-sm);
+    border: var(--border-width-medium) solid var(--color-border-primary);
+    border-radius: var(--border-radius-large);
+    background-color: transparent;
+    min-height: 50px;
+    box-sizing: border-box;
+}
+
+.rank-label, 
+.participants-label {
+    font-family: var(--font-japanese);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: 400;
+}
+
+.rank-label::before {
+    content: "";
+    width: var(--spacing-md);
+    height: var(--spacing-md);
+    background: linear-gradient(45deg, var(--color-gradient-start), var(--color-gradient-end));
+    border-radius: var(--border-radius-circle);
+}
+
+.participants-label::before {
+    content: "";
+    width: var(--spacing-md);
+    height: var(--spacing-md);
+    background: linear-gradient(45deg, var(--color-gradient-start), var(--color-gradient-end));
+    border-radius: var(--border-radius-circle);
+}
+
+.rank-number-bottom, 
+.participants-number {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+}
+
+/* 順位と参加者数の数字を大きく */
+.rank-value-bottom, 
+.participants-value {
+    font-family: var(--font-english-numbers);
+    font-size: var(--font-size-display-sm); /* 28pxから48pxに拡大 */
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.rank-suffix-bottom, 
+.participants-suffix {
+    font-family: var(--font-japanese);
+    font-size: var(--font-size-lg); /* 14pxから18pxに拡大 */
+    font-weight: 400;
+    color: var(--color-text-primary);
+}
+
+/* レベル範囲表示 - プログレスバーの両端真下に配置 */
+.level-range {
+    margin-top: var(--spacing-md);
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 var(--spacing-xl);
+}
+
+.range-start,
+.range-end {
+    font-family: var(--font-english-numbers);
+    font-size: var(--font-size-md);
+    font-weight: 400;
+    color: var(--color-text-primary);
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-large);
+    border: var(--border-width-thin) solid rgba(255, 255, 255, 0.2);
+}
+
+.range-text {
+    display: none; /* 古い中央表示を非表示 */
+}
+
+/* レスポンシブ対応 - 完全に再構築 */
+@media (max-width: 768px) {
+    .semi-meter {
+        padding: var(--spacing-md);
+        margin: var(--spacing-sm);
+    }
+    
+    .title-row {
+        justify-content: center;
+        margin-bottom: var(--spacing-xl);
+    }
+    
+    .Hato-point-title {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .point-number {
+        font-size: 80pt;
+        min-height: 100px;
+        padding: var(--spacing-lg) var(--spacing-xl);
+        margin-bottom: var(--spacing-xl);
+    }
+    
+    .point-number p {
+        font-size: var(--font-size-xxxl);
+        margin-right: var(--spacing-md);
+        padding-bottom: var(--spacing-sm);
+    }
+    
+    .svg-container {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto var(--spacing-xl) auto;
+    }
+    
+    .level-display {
+        font-size: 72pt; /* レスポンシブ時は少し小さく */
+    }
+    
+    .next-level-info {
+        font-size: var(--font-size-md);
+        margin-top: var(--spacing-md);
+    }
+    
+    .stats-container {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+    }
+    
+    .stat-box {
+        font-size: var(--font-size-xl);
+        padding: var(--spacing-lg);
+        min-height: 80px;
+    }
+    
+    .range-start,
+    .range-end {
+        font-size: var(--font-size-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .semi-meter {
+        padding: var(--spacing-sm);
+        margin: var(--spacing-xs);
+    }
+    
+    .title-row {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .Hato-point-title h1 {
+        font-size: var(--font-size-sm);
+    }
+    
+    .point-number {
+        font-size: 60pt;
+        padding: var(--spacing-md) var(--spacing-lg);
+        min-height: 80px;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .point-number p {
+        font-size: var(--font-size-xl);
+        margin-right: var(--spacing-sm);
+        padding-bottom: var(--spacing-xs);
+    }
+    
+    .svg-container {
+        max-width: 250px;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .level-display {
+        font-size: 48pt; /* 小画面では更に小さく */
+    }
+    
+    .next-level-info {
+        font-size: var(--font-size-md);
+    }
+    
+    .stats-container {
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-lg);
+    }
+    
+    .stat-box {
+        font-size: var(--font-size-lg);
+        padding: var(--spacing-md);
+        min-height: 60px;
+    }
+    
+    .range-start,
+    .range-end {
+        font-size: var(--font-size-xs);
+    }
+}

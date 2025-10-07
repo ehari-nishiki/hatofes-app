@@ -44,8 +44,11 @@ export default function App() {
   // Firebase初期化エラーの保存
   const [initError, setInitError] = useState<string | null>(null)
 
-  // 仮ポイントの状態（後でDBに置き換える想定）
-  const [points, setPoints] = useState<number>(65)
+  // ログインユーザーID（後で認証情報から取得する想定）
+  const userId = "u3"; // 仮のユーザーID
+  
+  // 仮のポイント状態（元のSemiCircleMeter用）
+  const [points, _] = useState(75);
 
   // 認証インスタンスを保持するためのref
   const authRef = useRef<any>(null)
@@ -130,14 +133,7 @@ VITE_FIREBASE_APP_ID=your_app_id</pre>
       ) : (
         <>
           {/* ポイントメーター */}
-          <SemiCircleMeter value={points} max={100} />
-
-          {/* ポイント操作ボタン */}
-          <div style={{ marginTop: 12 }}>
-            <button onClick={() => setPoints(p => Math.max(0, p - 5))}>-5</button>
-            <button onClick={() => setPoints(p => Math.min(100, p + 5))}>+5</button>
-            <button onClick={() => setPoints(0)}>Reset</button>
-          </div>
+          <SemiCircleMeter userId={userId} points={points} />
 
           <hr style={{ margin: '24px 0' }} />
 
