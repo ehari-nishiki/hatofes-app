@@ -1,7 +1,27 @@
 // src/components/SemiCircleMeter/SemiCircleMeter.tsx
 import React, { useId } from "react";
 import "./SemiCircleMeter.css";
-import { getUserLevelInfo } from "../../mocks/userLevels";
+import { getUserLevelInfo, LEVEL_THRESHOLDS } from "../../mocks/points";
+
+// 最終同期時間を計算する関数
+function formatLastSync(updatedAt: string): string {
+  const now = new Date();
+  const updated = new Date(updatedAt);
+  const diffMs = now.getTime() - updated.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMinutes < 1) {
+    return "最終同期 今";
+  } else if (diffMinutes < 60) {
+    return `最終同期 ${diffMinutes}分前`;
+  } else if (diffHours < 24) {
+    return `最終同期 ${diffHours}時間前`;
+  } else {
+    return `最終同期 ${diffDays}日前`;
+  }
+}
 
 // Props の型定義: userId と points を受け取る
 type Props = {
@@ -9,37 +29,26 @@ type Props = {
   points: number;
 };
 
-// レベル計算関数
+// 統一されたレベル計算関数
 function calculateLevel(points: number): { level: number; minPoints: number; maxPoints: number; nextLevel: number; remainingPoints: number } {
-  const levels = [
-    { level: 1, minPoints: 0, maxPoints: 99 },
-    { level: 2, minPoints: 100, maxPoints: 199 },
-    { level: 3, minPoints: 200, maxPoints: 299 },
-    { level: 4, minPoints: 300, maxPoints: 399 },
-    { level: 5, minPoints: 400, maxPoints: 499 },
-    { level: 6, minPoints: 500, maxPoints: 599 },
-    { level: 7, minPoints: 600, maxPoints: 699 },
-    { level: 8, minPoints: 700, maxPoints: 799 },
-    { level: 9, minPoints: 800, maxPoints: 899 },
-    { level: 10, minPoints: 900, maxPoints: 999 },
-  ];
-
-  const currentLevel = levels.find(l => points >= l.minPoints && points <= l.maxPoints) || levels[levels.length - 1];
-  const nextLevel = levels.find(l => l.level === currentLevel.level + 1);
-  const remainingPoints = nextLevel ? nextLevel.minPoints - points : 0;
-
+  // 現在のレベルを特定
+  const currentThreshold = LEVEL_THRESHOLDS.find(t => points >= t.min && points <= t.max) || LEVEL_THRESHOLDS[0];
+  
+  // 次のレベルを特定
+  const nextThreshold = LEVEL_THRESHOLDS.find(t => t.level > currentThreshold.level);
+  
   return {
-    level: currentLevel.level,
-    minPoints: currentLevel.minPoints,
-    maxPoints: currentLevel.maxPoints,
-    nextLevel: nextLevel ? nextLevel.level : currentLevel.level,
-    remainingPoints: Math.max(0, remainingPoints)
+    level: currentThreshold.level,
+    minPoints: currentThreshold.min,
+    maxPoints: currentThreshold.max,
+    nextLevel: nextThreshold ? nextThreshold.level : currentThreshold.level + 1,
+    remainingPoints: nextThreshold ? nextThreshold.min - points : 0
   };
 }
 
 const SemiCircleMeter: React.FC<Props> = ({ userId, points }) => {
   const radius = 120;
-  const strokeWidth = 16; // より太いストローク
+  const strokeWidth = 20; // より太いストロークで画像に近づける
   // 半円の円周の長さを計算（πr）
   const circumference = Math.PI * radius;
   
@@ -47,8 +56,18 @@ const SemiCircleMeter: React.FC<Props> = ({ userId, points }) => {
   const levelInfo = calculateLevel(points);
   const userInfo = getUserLevelInfo(userId);
   
-  // 進捗に応じた弧の長さを計算（現在のレベル内での進捗）
-  const levelProgress = (points - levelInfo.minPoints) / (levelInfo.maxPoints - levelInfo.minPoints);
+  // 最終同期時間を取得
+  const lastSyncText = userInfo ? formatLastSync(userInfo.updatedAt) : "最終同期 不明";
+  
+  // 進捗に応じた弧の長さを計算（ユーザーの要求に基づいた計算）
+  // メーターの表示ポイント範囲 = 次のレベルに達するポイント - 現在のレベルに達するポイント
+  const meterRange = levelInfo.maxPoints - levelInfo.minPoints;
+  
+  // 現在のポイントから現在のレベルになるために必要なポイントを引く
+  const currentProgressInLevel = points - levelInfo.minPoints;
+  
+  // それをメーターの表示ポイント範囲で割って達成率を算出
+  const levelProgress = Math.max(0, Math.min(1, currentProgressInLevel / meterRange));
   const progress = levelProgress * circumference;
   const id = useId();
 
@@ -62,11 +81,16 @@ const SemiCircleMeter: React.FC<Props> = ({ userId, points }) => {
         </div>
 
         <div className="point-number">
-            <span>{points}</span>
+            <span>{points.toString().padStart(5, '0')}</span>
             <p>pt</p>
         </div>
 
       <div className="svg-container">
+        {/* 最終同期表示をSVGの外、右上端に配置 */}
+        <div className="last-updated-outside">
+          {lastSyncText}
+        </div>
+        
         <svg className="svg"
         width={radius * 2 + 100}
         height={radius + 60}
@@ -76,76 +100,146 @@ const SemiCircleMeter: React.FC<Props> = ({ userId, points }) => {
         aria-label={`鳩ポイント: ${points}`}
       >
         <defs>
+          {/* メインのグラデーション - 画像に合わせた鮮やかな青紫 */}
           <linearGradient
-            id={id}
+            id={`${id}-main`}
             gradientUnits="userSpaceOnUse"
             x1="20"
             y1={radius + 10}
             x2={radius * 2 + 10}
             y2={radius + 10}
           >
-            <stop offset="0%" stopColor="#2600FF" />
-            <stop offset="100%" stopColor="#8400FF" />
+            <stop offset="0%" stopColor="#4A00FF" />
+            <stop offset="50%" stopColor="#6B46C1" />
+            <stop offset="100%" stopColor="#9333EA" />
           </linearGradient>
+          
+          {/* 3D効果用のシャドウグラデーション */}
+          <linearGradient
+            id={`${id}-shadow`}
+            gradientUnits="userSpaceOnUse"
+            x1="20"
+            y1={radius + 10}
+            x2={radius * 2 + 10}
+            y2={radius + 10}
+          >
+            <stop offset="0%" stopColor="#1A0040" />
+            <stop offset="50%" stopColor="#2D1B69" />
+            <stop offset="100%" stopColor="#4C1D95" />
+          </linearGradient>
+          
+          {/* ハイライト用のグラデーション */}
+          <linearGradient
+            id={`${id}-highlight`}
+            gradientUnits="userSpaceOnUse"
+            x1="20"
+            y1={radius + 10}
+            x2={radius * 2 + 10}
+            y2={radius + 10}
+          >
+            <stop offset="0%" stopColor="#7C3AED" />
+            <stop offset="50%" stopColor="#A855F7" />
+            <stop offset="100%" stopColor="#C084FC" />
+          </linearGradient>
+          
+          {/* インジケーター用のドロップシャドウフィルター */}
+          <filter id={`${id}-drop-shadow`} x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#000000" floodOpacity="0.3"/>
+          </filter>
         </defs>
 
-        {/* 背景の弧（進捗していない部分） - 黒色で太い線 */}
+        {/* 背景の弧（進捗していない部分） - より明るい色で見やすく */}
         <path
           d={`M20 ${radius + 20} A ${radius} ${radius} 0 0 1 ${radius * 2 + 20} ${radius + 20}`}
           fill="none"
-          stroke="#000000"
-          strokeWidth={strokeWidth + 4} // 背景を少し太く
+          stroke="#444444"
+          strokeWidth={strokeWidth + 4}
           strokeLinecap="round"
+          className="track"
         />
         
-        {/* 白い枠線 */}
+        {/* シャドウレイヤー（3D効果） */}
         <path
           d={`M20 ${radius + 20} A ${radius} ${radius} 0 0 1 ${radius * 2 + 20} ${radius + 20}`}
           fill="none"
-          stroke="#ffffff"
-          strokeWidth={2} // 細い白い枠線
-          strokeLinecap="round"
-        />
-        
-        {/* 内側の白い枠線 */}
-        <path
-          d={`M20 ${radius + 20} A ${radius} ${radius} 0 0 1 ${radius * 2 + 20} ${radius + 20}`}
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth={2}
-          strokeLinecap="round"
-          style={{
-            strokeDasharray: `${strokeWidth - 4} ${strokeWidth - 4}`,
-            strokeDashoffset: strokeWidth - 4
-          }}
-        />
-
-        {/* 進捗の弧（グラデーション） */}
-        <path
-          d={`M20 ${radius + 20} A ${radius} ${radius} 0 0 1 ${radius * 2 + 20} ${radius + 20}`}
-          fill="none"
-          stroke={`url(#${id})`}
+          stroke={`url(#${id}-shadow)`}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
+          className="progress"
           style={{
             strokeDasharray: circumference,
-            strokeDashoffset: Math.max(0, circumference - progress),
+            strokeDashoffset: circumference - progress,
+            transition: "stroke-dashoffset 400ms ease",
+            opacity: 0.8
+          }}
+        />
+        
+        {/* メインの進捗弧 */}
+        <path
+          d={`M20 ${radius + 20} A ${radius} ${radius} 0 0 1 ${radius * 2 + 20} ${radius + 20}`}
+          fill="none"
+          stroke={`url(#${id}-main)`}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          className="progress"
+          style={{
+            strokeDasharray: circumference,
+            strokeDashoffset: circumference - progress,
             transition: "stroke-dashoffset 400ms ease",
           }}
         />
         
-        {/* 進捗バーの先端に白い円を追加 */}
+        {/* ハイライトレイヤー（3D効果） */}
+        <path
+          d={`M20 ${radius + 20} A ${radius} ${radius} 0 0 1 ${radius * 2 + 20} ${radius + 20}`}
+          fill="none"
+          stroke={`url(#${id}-highlight)`}
+          strokeWidth={strokeWidth * 0.5}
+          strokeLinecap="round"
+          className="progress"
+          style={{
+            strokeDasharray: circumference,
+            strokeDashoffset: circumference - progress,
+            transition: "stroke-dashoffset 400ms ease",
+            opacity: 0.9
+          }}
+        />
+        
+        
+        {/* 進捗バーの先端に改良された白い円インジケーター */}
         {progress > 0 && (
-          <circle
-            cx={20 + radius + Math.cos(Math.PI * (1 - progress / circumference)) * radius}
-            cy={radius + 20 - Math.sin(Math.PI * (1 - progress / circumference)) * radius}
-            r={strokeWidth / 2}
-            fill="white"
-            className="progress-indicator"
-            style={{
-              transition: "cx 400ms ease, cy 400ms ease",
-            }}
-          />
+          <g>
+            {/* インジケーターのシャドウ */}
+            <circle
+              cx={20 + radius + Math.cos(Math.PI * (1 - progress / circumference)) * radius}
+              cy={radius + 22 - Math.sin(Math.PI * (1 - progress / circumference)) * radius}
+              r={strokeWidth / 2 + 2}
+              fill="#000000"
+              opacity="0.2"
+            />
+            {/* メインのインジケーター */}
+            <circle
+              cx={20 + radius + Math.cos(Math.PI * (1 - progress / circumference)) * radius}
+              cy={radius + 20 - Math.sin(Math.PI * (1 - progress / circumference)) * radius}
+              r={strokeWidth / 2 + 1}
+              fill="white"
+              filter={`url(#${id}-drop-shadow)`}
+              className="progress-indicator"
+              style={{
+                transition: "cx 400ms ease, cy 400ms ease",
+              }}
+            />
+            {/* インジケーターのハイライト */}
+            <circle
+              cx={20 + radius + Math.cos(Math.PI * (1 - progress / circumference)) * radius - 2}
+              cy={radius + 18 - Math.sin(Math.PI * (1 - progress / circumference)) * radius}
+              r={strokeWidth / 4}
+              fill="rgba(255, 255, 255, 0.8)"
+              style={{
+                transition: "cx 400ms ease, cy 400ms ease",
+              }}
+            />
+          </g>
         )}
 
         {/* レベル表示をメーターの内側に配置 */}
@@ -162,18 +256,19 @@ const SemiCircleMeter: React.FC<Props> = ({ userId, points }) => {
         
         {/* レベル表示と次レベル情報の間の線 */}
         <line
-          x1={radius - 50}
-          y1={radius + 18}
-          x2={radius + 90}
-          y2={radius + 18}
+          x1={radius + 20 - 40}
+          y1={radius + 17}
+          x2={radius + 20 + 40}
+          y2={radius + 17}
           stroke="white"
           strokeWidth="1"
+          opacity="0.6"
         />
         
         {/* 次のレベルまでの情報 */}
         <text
           x={radius + 20}
-          y={radius + 35}
+          y={radius + 30}
           textAnchor="middle"
           className="next-level-info"
           fill="white"

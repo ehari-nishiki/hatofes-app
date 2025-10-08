@@ -1,28 +1,28 @@
 // src/components/LevelMeter/LevelMeter.tsx
 import React, { useId } from "react";
 import "./LevelMeter.css";
-import { getUserLevelInfo } from "../../mocks/userLevels";
+import { getUserLevelInfo, LEVEL_THRESHOLDS } from "../../mocks/points";
 
-// Props の型定義: userId がユーザーID
+// Props の型定義
 type Props = {
   userId: string;
 };
 
-// ポイント数からレベルを計算する関数
+// 統一されたレベル計算関数
 function calculateLevel(points: number): { level: number; minPoints: number; maxPoints: number; nextLevel: number; remainingPoints: number } {
-  if (points < 1000) {
-    return { level: 0, minPoints: 0, maxPoints: 999, nextLevel: 1, remainingPoints: 1000 - points };
-  } else if (points < 1500) {
-    return { level: 1, minPoints: 1000, maxPoints: 1499, nextLevel: 2, remainingPoints: 1500 - points };
-  } else if (points < 2500) {
-    return { level: 2, minPoints: 1500, maxPoints: 2499, nextLevel: 3, remainingPoints: 2500 - points };
-  } else if (points < 5000) {
-    return { level: 3, minPoints: 2500, maxPoints: 4999, nextLevel: 4, remainingPoints: 5000 - points };
-  } else if (points < 10000) {
-    return { level: 4, minPoints: 5000, maxPoints: 9999, nextLevel: 5, remainingPoints: 10000 - points };
-  } else {
-    return { level: 5, minPoints: 10000, maxPoints: 20000, nextLevel: 6, remainingPoints: 0 };
-  }
+  // 現在のレベルを特定
+  const currentThreshold = LEVEL_THRESHOLDS.find(t => points >= t.min && points <= t.max) || LEVEL_THRESHOLDS[0];
+  
+  // 次のレベルを特定
+  const nextThreshold = LEVEL_THRESHOLDS.find(t => t.level > currentThreshold.level);
+  
+  return {
+    level: currentThreshold.level,
+    minPoints: currentThreshold.min,
+    maxPoints: currentThreshold.max,
+    nextLevel: nextThreshold ? nextThreshold.level : currentThreshold.level + 1,
+    remainingPoints: nextThreshold ? nextThreshold.min - points : 0
+  };
 }
 
 // 最終同期時間を計算する関数

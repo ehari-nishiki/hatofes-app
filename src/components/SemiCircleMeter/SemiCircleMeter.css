@@ -49,7 +49,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    padding: var(--spacing-xl);
+    padding: var(--spacing-xxxl);
     width: 100%;
     box-sizing: border-box;
     box-shadow: 0 0 30px var(--color-border-primary);
@@ -65,12 +65,27 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    margin-bottom: var(--spacing-xxxl);
+    margin-bottom: var(--spacing-lg); /* var(--spacing-lg)からさらに縮小 */
     text-align: left;
     font-family: var(--font-japanese);
     font-weight: 700;
     font-size: var(--font-size-xl);
 }
+
+/* SVG外の最終更新表示 */
+.last-updated-outside {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 9px;
+  font-weight: 300;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #888888;
+  opacity: 0.6;
+  z-index: 10;
+}
+
+/* 元の最終更新表示スタイル（使用されなくなったため削除） */
 
 .Hato-point-title {
     display: inline-flex;
@@ -78,7 +93,7 @@
     justify-content: flex-start;
     gap: var(--spacing-sm);
     border-radius: var(--border-radius-large);
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg); /* var(--spacing-sm) var(--spacing-md)から拡大 */
     line-height: 1;
     border: var(--border-width-medium) solid var(--color-border-primary);
     background-color: transparent;
@@ -119,7 +134,7 @@
     width: 100%;
     justify-content: flex-end;
     line-height: 1;
-    margin-bottom: var(--spacing-xxxl);
+    margin-bottom: var(--spacing-lg); /* var(--spacing-lg)からさらに縮小 */
     padding: var(--spacing-xl) var(--spacing-xxl);
     min-height: 140px; /* 高さも拡大 */
 }
@@ -140,69 +155,70 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto var(--spacing-xxxl) auto;
+    margin: 0 auto var(--spacing-lg) auto;
     position: relative;
 }
 
 .svg-container svg {
     width: 100%;
     height: auto;
-    max-width: 400px;
 }
 
 /* プログレスバー - 線幅を統一 */
 .track {
     fill: none;
-    stroke: var(--color-bg-primary);
-    stroke-width: 30; /* 統一された線幅 */
+    stroke: #444444;
+    stroke-width: 24;
     stroke-linecap: round;
 }
 
 .trackwhite {
     fill: none;
     stroke: var(--color-border-primary);
-    stroke-width: 32; /* 外側の白枠（2px太く） */
+    stroke-width: 32;
     stroke-linecap: round;
 }
 
 .progress {
     fill: none;
-    stroke-width: 30; /* プログレス部分も統一 */
+    stroke-width: 30;
     stroke-linecap: round;
-    transition: stroke-dashoffset 0.6s ease;
+    transition: stroke-dashoffset 400ms ease;
 }
 
 /* メーター内のレベル表示 - サイズ拡大 */
 .level-display {
     font-family: var(--font-japanese);
-    font-size: 96pt; /* 96ptに設定 */
-    font-weight: 700;
-    fill: var(--color-text-primary);
-}
-
-.level-text-inside {
-    font-family: var(--font-japanese);
-    font-size: var(--font-size-xxl); /* 20pxから24pxに拡大 */
+    font-size: 48px;
     font-weight: 700;
     fill: var(--color-text-primary);
 }
 
 .level-prefix-inside {
     font-family: var(--font-japanese);
-    font-size: var(--font-size-xxl); /* 20pxから24pxに拡大 */
+    font-size: 18px;
     font-weight: 700;
+    fill: var(--color-text-primary);
 }
 
 .level-value-inside {
     font-family: var(--font-english-numbers);
-    font-size: var(--font-size-display-sm); /* 32pxから48pxに拡大 */
+    font-size: 32px;
     font-weight: 700;
+    fill: var(--color-text-primary);
 }
 
-.next-level-text-inside {
+.next-level-info {
     font-family: var(--font-japanese);
-    font-size: var(--font-size-lg); /* 16pxから18pxに拡大 */
+    font-size: var(--font-size-sm);
+    fill: var(--color-text-primary);
+}
+
+.range-start,
+.range-end {
+    font-family: var(--font-english-numbers);
+    font-size: var(--font-size-xs);
+    font-weight: 400;
     fill: var(--color-text-primary);
 }
 
@@ -219,7 +235,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: var(--spacing-xxl);
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: var(--spacing-xxl);
     gap: var(--spacing-lg);
     width: 100%;
 }
@@ -229,11 +245,11 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: var(--spacing-sm);
+    padding: var(--spacing-lg);
     border: var(--border-width-medium) solid var(--color-border-primary);
     border-radius: var(--border-radius-large);
     background-color: transparent;
-    min-height: 50px;
+    min-height: 80px;
     box-sizing: border-box;
 }
 
@@ -247,6 +263,7 @@
     align-items: center;
     gap: var(--spacing-sm);
     font-weight: 400;
+    line-height: 1.4;
 }
 
 .rank-label::before {
@@ -276,17 +293,18 @@
 .rank-value-bottom, 
 .participants-value {
     font-family: var(--font-english-numbers);
-    font-size: var(--font-size-display-sm); /* 28pxから48pxに拡大 */
+    font-size: var(--font-size-xl);
     font-weight: 700;
     color: var(--color-text-primary);
+    line-height: 1;
 }
 
-.rank-suffix-bottom, 
-.participants-suffix {
+.rank-unit-bottom, 
+.participants-unit {
     font-family: var(--font-japanese);
-    font-size: var(--font-size-lg); /* 14pxから18pxに拡大 */
-    font-weight: 400;
+    font-size: var(--font-size-sm);
     color: var(--color-text-primary);
+    font-weight: 400;
 }
 
 /* レベル範囲表示 - プログレスバーの両端真下に配置 */
@@ -347,12 +365,11 @@
     
     .svg-container {
         width: 100%;
-        max-width: 300px;
         margin: 0 auto var(--spacing-xl) auto;
     }
     
     .level-display {
-        font-size: 72pt; /* レスポンシブ時は少し小さく */
+        font-size: 96pt;
     }
     
     .next-level-info {
@@ -361,9 +378,10 @@
     }
     
     .stats-container {
-        flex-direction: column;
+        flex-direction: row;
         gap: var(--spacing-lg);
         margin-top: var(--spacing-xl);
+        margin-bottom: var(--spacing-xl);
     }
     
     .stat-box {
@@ -406,12 +424,11 @@
     }
     
     .svg-container {
-        max-width: 250px;
         margin-bottom: var(--spacing-lg);
     }
     
     .level-display {
-        font-size: 48pt; /* 小画面では更に小さく */
+        font-size: 72pt;
     }
     
     .next-level-info {
@@ -419,8 +436,9 @@
     }
     
     .stats-container {
-        gap: var(--spacing-md);
-        margin-top: var(--spacing-lg);
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+        margin-bottom: var(--spacing-xl);
     }
     
     .stat-box {
